@@ -1,0 +1,3 @@
+# Ignorar .env (informações sensíveis)
+.env
+node_modules/
