@@ -40,6 +40,84 @@
         .content {
             flex: 1 0 auto;
         }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .video-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .video-actions button {
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .video-actions button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-success {
+            border-width: 2px;
+        }
+        
+        .btn-outline-success:hover {
+            background-color: #198754;
+            color: white;
+        }
+        
+        .btn-outline-primary {
+            border-width: 2px;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .btn-outline-info {
+            border-width: 2px;
+        }
+        
+        .btn-outline-info:hover {
+            background-color: #0dcaf0;
+            color: white;
+        }
+
+        .video-description {
+            font-size: 0.95rem;
+        }
+        
+        .suggested-video {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .suggested-video:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .description-text {
+            max-height: 100px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .description-text.expanded {
+            max-height: 1000px;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +156,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- Add this after the existing about-section div -->
+        <div class="video-section my-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12"> <!-- Changed to full width -->
+                        <!-- Video Player -->
+                        <div class="video-container mb-3">
+                            <iframe 
+                                width="100%" 
+                                height="500" 
+                                src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                                title="Sobre Nossa Empresa" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <!-- Video Title and Actions -->
+                        <h3 class="video-title mb-2">Nossa História e Missão</h3>
+                        <div class="video-actions d-flex align-items-center mb-3">
+                            <div class="d-flex align-items-center me-4">
+                                <button class="btn btn-outline-success me-2">
+                                    <i class="bi bi-heart-fill"></i> Curtir (1.2K)
+                                </button>
+                                <button class="btn btn-outline-primary me-2">
+                                    <i class="bi bi-star-fill"></i> Favoritar
+                                </button>
+                                <!-- Update the share button in the video actions div -->
+                                <button class="btn btn-outline-info" onclick="copyToClipboard()">
+                                    <i class="bi bi-share-fill"></i> Compartilhar
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Video Description -->
+                        <div class="video-description bg-light p-3 rounded">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>52,147 visualizações • 15 de mar. de 2024</span>
+                                <button class="btn btn-link" onclick="toggleDescription()">Mostrar mais</button>
+                            </div>
+                            <div id="description-text" class="description-text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                <div class="collapsed-content" style="display: none;">
+                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="footer">
@@ -93,5 +223,78 @@
             </div>
         </div>
     </footer>
+
+    <!-- Add this script section at the end of your body tag -->
+    <script>
+        function toggleDescription() {
+            const descriptionText = document.getElementById('description-text');
+            const collapsedContent = descriptionText.querySelector('.collapsed-content');
+            const button = document.querySelector('.btn-link');
+            
+            if (collapsedContent.style.display === 'none') {
+                collapsedContent.style.display = 'block';
+                descriptionText.classList.add('expanded');
+                button.textContent = 'Mostrar menos';
+            } else {
+                collapsedContent.style.display = 'none';
+                descriptionText.classList.remove('expanded');
+                button.textContent = 'Mostrar mais';
+            }
+        }
+
+        function copyToClipboard() {
+            // You can replace this with your actual YouTube video URL
+            const videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            
+            navigator.clipboard.writeText(videoUrl).then(() => {
+                // Show the toast
+                const toast = new bootstrap.Toast(document.getElementById('clipboardToast'), {
+                    animation: true,
+                    autohide: true,
+                    delay: 2000
+                });
+                toast.show();
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('Não foi possível copiar o link. Por favor, tente novamente.');
+            });
+        }
+
+        // Initialize tooltips if you're using them
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl);
+            });
+        });
+    </script>
+
+    <!-- Add these additional styles -->
+    <style>
+        .toast {
+            opacity: 0.95;
+        }
+
+        .toast:hover {
+            opacity: 1;
+        }
+
+        .toast-body {
+            font-size: 0.95rem;
+        }
+    </style>
+
+    <!-- Add this toast element after your video section -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="clipboardToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Link copiado para a área de transferência!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

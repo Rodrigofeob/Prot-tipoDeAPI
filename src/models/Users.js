@@ -23,7 +23,7 @@ class User {
 
     async findAll() {
         try {
-            let users = await knex.select(["name", "email", "phone", "emergency_contact", "health_info"]).table('users') // incluir campos
+            let users = await knex.select(["name", "email", "phone", "role", "emergency_contact", "health_info"]).table('users') // incluir campos
             return {status: true, values: users}
         } catch (err) {
             console.log(err)

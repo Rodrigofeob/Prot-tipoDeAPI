@@ -13,7 +13,7 @@ class Donation {
             return { status: false, err: err }
         }
     }
-
+                        
     async findAll() {
         try {
             let donations = await knex.select('*').table('donations')

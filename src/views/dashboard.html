@@ -133,6 +133,7 @@
 
     <div class="content">
         <div class="container mt-4">
+            <!-- Admin Content -->
             <div id="adminContent" style="display: none;">
                 <h2>Painel de Administração</h2>
                 <div class="row">
@@ -174,60 +175,74 @@
                     </div>
                 </div>
             </div>
-            
-            <div id="userContent">
-                <h2>Bem-vindo ao nosso site!</h2>
-                <!-- Keep your existing location and contact sections here -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
+
+            <!-- Regular User Content -->
+            <div id="userContent" style="display: none;">
+                <h2>Bem-vindo ao Sistema</h2>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
                             <div class="card-header">
-                                <h5>Localização da Empresa</h5>
+                                <h5>Nossa Localização</h5>
                             </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p>R. Augusto Caetano, 275 - Jardim Nova Sao Joao, São João da Boa Vista - SP, 13874-143</p>
-                                        <div id="map" style="height: 400px;"></div>
-                                        <button class="btn btn-primary mt-2" onclick="getDirections()">Como Chegar</button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6>Horário de Funcionamento</h6>
-                                        <ul class="list-unstyled">
-                                            <li>Segunda a Sexta: 9:00 - 18:00</li>
-                                            <li>Sábado: 9:00 - 13:00</li>
-                                            <li>Domingo: Fechado</li>
-                                        </ul>
-                                        <h6 class="mt-4">Contate-nos</h6>
-                                        <form id="contactForm">
-                                            <div class="mb-3">
-                                                <input type="text" class="form-control" placeholder="Nome" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <input type="email" class="form-control" placeholder="Email" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <textarea class="form-control" rows="3" placeholder="Mensagem" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Enviar</button>
-                                        </form>
-                                        <h6 class="mt-4">Redes Sociais</h6>
-                                        <div class="social-links">
-                                            <a href="https://www.instagram.com" target="_blank" class="btn btn-outline-primary me-2">
-                                                <i class="bi bi-instagram"></i>
-                                            </a>
-                                            <a href="https://www.twitter.com" target="_blank" class="btn btn-outline-primary me-2">
-                                                <i class="bi bi-twitter"></i>
-                                            </a>
-                                            <a href="https://www.facebook.com" target="_blank" class="btn btn-outline-primary me-2">
-                                                <i class="bi bi-facebook"></i>
-                                            </a>
-                                            <a href="https://www.google.com" target="_blank" class="btn btn-outline-primary">
-                                                <i class="bi bi-google"></i>
-                                            </a>
-                                        </div>
-                                    </div>
+                                <div id="map" style="height: 400px;"></div>
+                            </div>
+                        </div>
+                        <!-- Social Media Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Redes Sociais</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-around">
+                                    <a href="#" class="btn btn-outline-primary">
+                                        <i class="bi bi-facebook"></i> Facebook
+                                    </a>
+                                    <a href="#" class="btn btn-outline-dark">
+                                        <i class="bi bi-x"></i> X
+                                    </a>
+                                    <a href="#" class="btn btn-outline-danger">
+                                        <i class="bi bi-instagram"></i> Instagram
+                                    </a>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Contato</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-geo-alt"></i> R. Augusto Caetano, 275</li>
+                                    <li><i class="bi bi-telephone"></i> (19) 3555-5555</li>
+                                    <li><i class="bi bi-envelope"></i> contato@empresa.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Contact Form -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Envie uma Mensagem</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="contactForm">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Mensagem</label>
+                                        <textarea class="form-control" id="message" rows="3" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Enviar</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -281,13 +296,22 @@
         function checkAuth() {
             const token = localStorage.getItem('authToken');
             const role = localStorage.getItem('userRole');
+            
             if (!token) {
                 window.location.href = 'login.html';
+                return;
+            }
+
+            // Hide both contents initially
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('userContent').style.display = 'none';
+
+            if (role === 'admin') {
+                document.getElementById('adminContent').style.display = 'block';
             } else {
                 document.getElementById('userContent').style.display = 'block';
-                if (role === 'admin') {
-                    document.getElementById('adminContent').style.display = 'block';
-                }
+                // Wait a bit for the DOM to be ready before initializing the map
+                setTimeout(initMap, 100);
             }
         }
 
@@ -366,32 +390,36 @@
         }
 
         function initMap() {
-            const companyLocation = { lat: -21.9705, lng: -46.7916 };
-            const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: companyLocation
-            });
-            const marker = new google.maps.Marker({
-                position: companyLocation,
-                map: map,
-                title: 'Nossa Empresa'
-            });
-
-            // Nearby places
-            const service = new google.maps.places.PlacesService(map);
-            service.nearbySearch(
-                { location: companyLocation, radius: 500, type: ['point_of_interest'] },
-                (results, status) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        const nearbyPlacesList = document.getElementById('nearbyPlaces');
-                        results.slice(0, 5).forEach((place) => {
-                            const li = document.createElement('li');
-                            li.textContent = place.name;
-                            nearbyPlacesList.appendChild(li);
-                        });
-                    }
+            try {
+                const companyLocation = { lat: -21.9705, lng: -46.7916 };
+                const mapElement = document.getElementById('map');
+                
+                if (!mapElement) {
+                    console.error('Map element not found');
+                    return;
                 }
-            );
+
+                const map = new google.maps.Map(mapElement, {
+                    zoom: 15,
+                    center: companyLocation,
+                    styles: [
+                        {
+                            featureType: "poi",
+                            elementType: "labels",
+                            stylers: [{ visibility: "on" }]
+                        }
+                    ]
+                });
+
+                const marker = new google.maps.Marker({
+                    position: companyLocation,
+                    map: map,
+                    title: 'Nossa Empresa'
+                });
+
+            } catch (error) {
+                console.error('Error initializing map:', error);
+            }
         }
 
         function getDirections() {
