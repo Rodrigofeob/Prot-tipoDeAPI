@@ -1,0 +1,292 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    background-color: #f0f0f0;
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+.footer {
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 40px 0 20px;
+    margin-top: auto;
+}
+
+.footer h5 {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.footer ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer ul li {
+    margin-bottom: 10px;
+}
+
+.footer a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #3498db;
+}
+
+.footer i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+.footer hr {
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 30px 0;
+}
+
+.footer p {
+    margin-bottom: 0;
+    color: #ecf0f1;
+}
+
+.footer .bi {
+    margin-right: 8px;
+}
+
+.navbar {
+    background-color: #1a73e8 !important;
+    margin-bottom: 20px;
+}
+
+/* Stripes */
+.stripe-left, .stripe-right {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: repeating-linear-gradient(
+        45deg,
+        #f0f0f0,
+        #f0f0f0 10px,
+        #e0e0e0 10px,
+        #e0e0e0 20px
+    );
+    z-index: -1;
+}
+
+.stripe-left {
+    left: 0;
+}
+
+.stripe-right {
+    right: 0;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.login-btn {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    opacity: 1;
+}
+
+.logo-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.logo-placeholder {
+    width: 150px;
+    height: 150px;
+    background-color: #f0f0f0;
+    display: inline-block;
+    line-height: 150px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.slogan {
+    font-style: italic;
+    color: #666;
+    margin-top: 10px;
+}
+
+.search-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn-outline-primary {
+    color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-outline-primary:hover {
+    color: #0056b3;
+    background-color: transparent;
+    border-color: #0056b3;
+}
+
+/* Add these styles for the admin cards */
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #1a73e8;
+    color: white;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 15px 20px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Make sure cards in the same row have equal height */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.col-md-4 {
+    margin-bottom: 20px;
+}
+
+.container {
+    flex: 1 0 auto;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-primary:hover {
+    background-color: #1557b0;
+    border-color: #1557b0;
+}
+
+.btn-outline-primary {
+    color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-outline-primary:hover {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+/* Modal styles */
+.modal-header {
+    background-color: #1a73e8;
+    color: white;
+}
+
+.modal-header .btn-close {
+    color: white;
+}
+
+/* List container styles */
+#usersList, #expensesList, #donationsList {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.card {
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add some spacing between cards */
+.card + .card {
+    margin-top: 10px;
+}
+
+/* Card body padding for buttons */
+.card-body .d-grid {
+    margin-bottom: 1rem;
+}
+
+/* Icon spacing in buttons */
+.btn i {
+    margin-right: 8px;
+}
+
+/* Add these styles */
+#welcomeMessage {
+    font-size: 1rem;
+    padding: 8px 0;
+    display: inline-block;
+    color: white !important;
+    margin-right: 15px;
+}
+
+.navbar-nav .nav-item {
+    display: flex;
+    align-items: center;
+}
+
+/* Add this to ensure the text is visible */
+.nav-link.text-light {
+    color: white !important;
+}
+
+.btn-group {
+    display: flex;
+    gap: 5px;
+}
+
+.text-muted {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+}

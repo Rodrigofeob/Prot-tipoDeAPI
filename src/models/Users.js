@@ -23,11 +23,13 @@ class User {
 
     async findAll() {
         try {
-            let users = await knex.select(["name", "email", "phone", "role", "emergency_contact", "health_info"]).table('users') // incluir campos
-            return {status: true, values: users}
+            let users = await knex
+                .select(["id", "name", "email", "phone", "role", "emergency_contact", "health_info"])
+                .table('users');
+            return { status: true, values: users };
         } catch (err) {
-            console.log(err)
-            return {status: false, err: err}
+            console.error('FindAll error:', err);
+            return { status: false, err: err.message };
         }
     }
 
@@ -41,16 +43,27 @@ class User {
     }
 
     async delete(id) {
-        let user = await this.findById(id)
-        if (user.status){
-            try {
-                await knex.delete().where({id:id}).table('users')
-                return {status: true, message:'Usuário Excluido com Sucesso'}
-            } catch (err) {
-                return {status: false, err: err}
+        try {
+            console.log('Attempting to delete user with ID:', id);
+            
+            // First check if user exists
+            const user = await knex('users').where({ id: id }).first();
+            if (!user) {
+                console.log('User not found:', id);
+                return { status: false, err: 'Usuário não encontrado' };
             }
-        }else{
-            return {status: false, err: 'Usuário não existe, portanto não pode ser deletado.'}
+
+            // Then delete
+            const result = await knex('users')
+                .where({ id: id })
+                .del();
+                
+            console.log('Delete result:', result);
+            
+            return { status: true, message: 'Usuário excluído com sucesso' };
+        } catch (err) {
+            console.error('Delete error in model:', err);
+            return { status: false, err: err.message };
         }
     }
 
@@ -93,6 +106,20 @@ class User {
             } catch (err) {
                 return {status: false, err: err}
             }
+        }
+    }
+
+    static async updatePassword(email, newPasswordHash) {
+        try {
+            // Implement the password update logic here
+            // This is a generic example - adjust according to your database structure
+            const result = await knex('users')
+                .where({ email: email })
+                .update({ password: newPasswordHash })
+            return result > 0
+        } catch (error) {
+            console.error('Error updating password:', error)
+            return false
         }
     }
 }

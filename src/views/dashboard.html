@@ -4,246 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Gerenciamento</title>
+    
+    <!-- External CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            position: relative;
-        }
-        .content {
-            flex: 1 0 auto;
-        }
-        .footer {
-            flex-shrink: 0;
-            background-color: #f8f9fa;
-            padding: 40px 0;
-            border-top: 1px solid #e7e7e7;
-        }
-        .navbar {
-            background-color: #1a73e8 !important;
-        }
-        /* Stripes */
-        .stripe-left, .stripe-right {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            width: 20px;
-            background: repeating-linear-gradient(
-                45deg,
-                #f0f0f0,
-                #f0f0f0 10px,
-                #e0e0e0 10px,
-                #e0e0e0 20px
-            );
-            z-index: -1;
-        }
-        .stripe-left {
-            left: 0;
-        }
-        .stripe-right {
-            right: 0;
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .login-btn {
-            font-size: 1.1rem;
-            padding: 10px 20px;
-            opacity: 1;
-        }
-        .logo-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .logo-placeholder {
-            width: 150px;
-            height: 150px;
-            background-color: #f0f0f0;
-            display: inline-block;
-            line-height: 150px;
-            font-size: 1.2rem;
-            color: #666;
-        }
-        .slogan {
-            font-style: italic;
-            color: #666;
-            margin-top: 10px;
-        }
-        .search-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        #map {
-            height: 400px;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .footer h5 {
-            color: #1a73e8;
-            margin-bottom: 20px;
-        }
-        .footer ul {
-            padding-left: 0;
-            list-style: none;
-        }
-        .footer ul li {
-            margin-bottom: 10px;
-        }
-        .footer a {
-            color: #6c757d;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            color: #1a73e8;
-        }
-        .btn-outline-primary {
-            color: #1a73e8;
-            border-color: #1a73e8;
-        }
-        .btn-outline-primary:hover {
-            color: #0056b3;
-            background-color: transparent;
-            border-color: #0056b3;
-        }
-    </style>
+    <link href="./css/dashboard.css" rel="stylesheet">
+
+    <!-- External JS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Configure axios
+        axios.defaults.baseURL = 'http://localhost:4040'; // Match your .env PORT
+    </script>
 </head>
 <body>
-    <div class="stripe-left"></div>
-    <div class="stripe-right"></div>
-
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Sistema de Gerenciamento</a>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <button class="btn btn-light" onclick="logout()">Logout</button>
-                </li>
-            </ul>
+        <div class="container">
+            <a class="navbar-brand" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link text-light me-3" id="welcomeMessage"></span>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-light" onclick="logout()">Logout</button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="content">
+    <!-- Admin Content -->
+    <div id="adminContent" style="display: none;">
         <div class="container mt-4">
-            <!-- Admin Content -->
-            <div id="adminContent" style="display: none;">
-                <h2>Painel de Administração</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Usuários</h5>
-                            </div>
-                            <div class="card-body">
-                                <button class="btn btn-primary" onclick="listUsers()">Listar Usuários</button>
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">Adicionar Usuário</button>
-                            </div>
-                            <ul id="userList" class="list-group list-group-flush"></ul>
+            <h2 class="mb-4">Painel Administrativo</h2>
+            
+            <div class="row">
+                <!-- Users Section -->
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>Usuários</h3>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Doações</h5>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary mb-2" onclick="showAddUserModal()">
+                                    <i class="bi bi-person-plus"></i> Adicionar Usuário
+                                </button>
+                                <button class="btn btn-outline-primary mb-2" onclick="listUsers()">
+                                    <i class="bi bi-people"></i> Listar Usuários
+                                </button>
                             </div>
-                            <div class="card-body">
-                                <button class="btn btn-primary" onclick="listDonations()">Listar Doações</button>
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDonationModal">Adicionar Doação</button>
-                            </div>
-                            <ul id="donationList" class="list-group list-group-flush"></ul>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Despesas</h5>
-                            </div>
-                            <div class="card-body">
-                                <button class="btn btn-primary" onclick="listExpenses()">Listar Despesas</button>
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addExpenseModal">Adicionar Despesa</button>
-                            </div>
-                            <ul id="expenseList" class="list-group list-group-flush"></ul>
+                            <div id="usersList" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Regular User Content -->
-            <div id="userContent" style="display: none;">
-                <h2>Bem-vindo ao Sistema</h2>
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5>Nossa Localização</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="map" style="height: 400px;"></div>
-                            </div>
+                <!-- Expenses Section -->
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>Despesas</h3>
                         </div>
-                        <!-- Social Media Section -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5>Redes Sociais</h5>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary mb-2" onclick="showAddExpenseModal()">
+                                    <i class="bi bi-plus-circle"></i> Adicionar Despesa
+                                </button>
+                                <button class="btn btn-outline-primary mb-2" onclick="listExpenses()">
+                                    <i class="bi bi-list"></i> Listar Despesas
+                                </button>
                             </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-around">
-                                    <a href="#" class="btn btn-outline-primary">
-                                        <i class="bi bi-facebook"></i> Facebook
-                                    </a>
-                                    <a href="#" class="btn btn-outline-dark">
-                                        <i class="bi bi-x"></i> X
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger">
-                                        <i class="bi bi-instagram"></i> Instagram
-                                    </a>
-                                </div>
-                            </div>
+                            <div id="expensesList" class="mt-3"></div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5>Contato</h5>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled">
-                                    <li><i class="bi bi-geo-alt"></i> R. Augusto Caetano, 275</li>
-                                    <li><i class="bi bi-telephone"></i> (19) 3555-5555</li>
-                                    <li><i class="bi bi-envelope"></i> contato@empresa.com</li>
-                                </ul>
-                            </div>
+                </div>
+
+                <!-- Donations Section -->
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>Doações</h3>
                         </div>
-                        <!-- Contact Form -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5>Envie uma Mensagem</h5>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary mb-2" onclick="showAddDonationModal()">
+                                    <i class="bi bi-gift"></i> Adicionar Doação
+                                </button>
+                                <button class="btn btn-outline-primary mb-2" onclick="listDonations()">
+                                    <i class="bi bi-list"></i> Listar Doações
+                                </button>
                             </div>
-                            <div class="card-body">
-                                <form id="contactForm">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Nome</label>
-                                        <input type="text" class="form-control" id="name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="message" class="form-label">Mensagem</label>
-                                        <textarea class="form-control" id="message" rows="3" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Enviar</button>
-                                </form>
-                            </div>
+                            <div id="donationsList" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -251,187 +107,208 @@
         </div>
     </div>
 
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="userName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="userEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPhone" class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" id="userPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userRole" class="form-label">Função</label>
+                            <select class="form-select" id="userRole" required>
+                                <option value="user">Usuário</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="addUser()">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal fade" id="addExpenseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Despesa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addExpenseForm">
+                        <div class="mb-3">
+                            <label for="expenseDescription" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="expenseDescription" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expenseAmount" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="expenseAmount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expenseDate" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="expenseDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="addExpense()">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Donation Modal -->
+    <div class="modal fade" id="addDonationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Doação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDonationForm">
+                        <div class="mb-3">
+                            <label for="donorName" class="form-label">Nome do Doador</label>
+                            <input type="text" class="form-control" id="donorName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="donationAmount" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="donationAmount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="donationDate" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="donationDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="addDonation()">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Content -->
+    <div id="userContent" style="display: none;">
+        <div class="container mt-4">
+            <h2>Área do Usuário</h2>
+            
+            <!-- Map Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Nossa Localização</h3>
+                </div>
+                <div class="card-body">
+                    <div id="map" style="height: 400px;"></div>
+                    <button class="btn btn-primary mt-3" onclick="getDirections()">Como Chegar</button>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Contato</h3>
+                </div>
+                <div class="card-body">
+                    <form id="contactForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Mensagem</label>
+                            <textarea class="form-control" id="message" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <h5>Sobre Nós</h5>
-                    <p>Nossa empresa é dedicada a fornecer soluções inovadoras para gerenciamento de doações e despesas, ajudando organizações a maximizar seu impacto social.</p>
-                    <a href="about.html" class="btn btn-outline-primary mt-2">Saiba Mais</a>
+                    <p>Somos uma organização dedicada a fazer a diferença na vida das pessoas através de ações sociais e apoio comunitário.</p>
                 </div>
                 <div class="col-md-4">
-                    <h5>Links Rápidos</h5>
+                    <h5>Links Úteis</h5>
                     <ul>
-                        <li><a href="#">Início</a></li>
-                        <li><a href="#">Serviços</a></li>
-                        <li><a href="#">Política de Privacidade</a></li>
-                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i>Política de Privacidade</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i>Termos de Uso</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i>FAQ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contato</h5>
                     <ul>
-                        <li>R. Augusto Caetano, 275</li>
-                        <li>Jardim Nova Sao Joao</li>
-                        <li>São João da Boa Vista - SP, 13874-143</li>
-                        <li>Email: contato@empresa.com</li>
-                        <li>Telefone: (19) 3555-5555</li>
+                        <li><i class="bi bi-envelope"></i> contato@exemplo.com</li>
+                        <li><i class="bi bi-telephone"></i> (11) 1234-5678</li>
+                        <li><i class="bi bi-geo-alt"></i> São João da Boa Vista, SP</li>
                     </ul>
                 </div>
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>&copy; 2023 Nome da Sua Empresa. Todos os direitos reservados.</p>
-                    <p class="mt-2">
-                        <small>Este site foi desenvolvido como um projeto gratuito em colaboração com a 
-                        <a href="https://www.unifeob.edu.br/" target="_blank">UNIFEOB</a>.</small>
-                    </p>
+                <div class="col-md-6">
+                    <p>© 2024 Todos os direitos reservados</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Desenvolvido com ❤️ por alunos da UNIFEOB</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- External JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        function checkAuth() {
+        // Configure axios to use your backend URL
+        axios.defaults.baseURL = 'http://localhost:4040'; // Using your PORT from .env
+        
+        // Add authorization header for protected routes
+        axios.interceptors.request.use(function (config) {
             const token = localStorage.getItem('authToken');
-            const role = localStorage.getItem('userRole');
-            
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
             }
-
-            // Hide both contents initially
-            document.getElementById('adminContent').style.display = 'none';
-            document.getElementById('userContent').style.display = 'none';
-
-            if (role === 'admin') {
-                document.getElementById('adminContent').style.display = 'block';
-            } else {
-                document.getElementById('userContent').style.display = 'block';
-                // Wait a bit for the DOM to be ready before initializing the map
-                setTimeout(initMap, 100);
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userRole');
-            window.location.href = 'login.html';
-        }
-
-        document.addEventListener('DOMContentLoaded', checkAuth);
-
-        function listUsers() {
-            axios.get('/api/users')
-                .then(response => {
-                    const users = response.data.values;
-                    const userList = document.getElementById('userList');
-                    userList.innerHTML = '';
-                    users.forEach(user => {
-                        userList.innerHTML += `<li class="list-group-item">${user.name} - ${user.email}</li>`;
-                    });
-                })
-                .catch(error => console.error('Error fetching users:', error));
-        }
-
-        function listDonations() {
-            axios.get('/api/donations')
-                .then(response => {
-                    const donations = response.data.values;
-                    const donationList = document.getElementById('donationList');
-                    donationList.innerHTML = '';
-                    donations.forEach(donation => {
-                        donationList.innerHTML += `<li class="list-group-item">${donation.donor_name} - R$ ${donation.amount}</li>`;
-                    });
-                })
-                .catch(error => console.error('Error fetching donations:', error));
-        }
-
-        function listExpenses() {
-            axios.get('/api/expenses')
-                .then(response => {
-                    const expenses = response.data.values;
-                    const expenseList = document.getElementById('expenseList');
-                    expenseList.innerHTML = '';
-                    expenses.forEach(expense => {
-                        expenseList.innerHTML += `<li class="list-group-item">${expense.description} - R$ ${expense.amount}</li>`;
-                    });
-                })
-                .catch(error => console.error('Error fetching expenses:', error));
-        }
-
-        function searchUsers() {
-            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
-            axios.get(`/api/users?search=${searchTerm}`)
-                .then(response => {
-                    const users = response.data.values;
-                    const userList = document.getElementById('userList');
-                    userList.innerHTML = '';
-                    users.forEach(user => {
-                        userList.innerHTML += `<li class="list-group-item">${user.name} - ${user.email}</li>`;
-                    });
-                })
-                .catch(error => console.error('Error searching users:', error));
-        }
-
-        // Add functions for adding new items (to be implemented)
-        function addUser() {
-            // Implement user addition logic
-        }
-
-        function addDonation() {
-            // Implement donation addition logic
-        }
-
-        function addExpense() {
-            // Implement expense addition logic
-        }
-
-        function initMap() {
-            try {
-                const companyLocation = { lat: -21.9705, lng: -46.7916 };
-                const mapElement = document.getElementById('map');
-                
-                if (!mapElement) {
-                    console.error('Map element not found');
-                    return;
-                }
-
-                const map = new google.maps.Map(mapElement, {
-                    zoom: 15,
-                    center: companyLocation,
-                    styles: [
-                        {
-                            featureType: "poi",
-                            elementType: "labels",
-                            stylers: [{ visibility: "on" }]
-                        }
-                    ]
-                });
-
-                const marker = new google.maps.Marker({
-                    position: companyLocation,
-                    map: map,
-                    title: 'Nossa Empresa'
-                });
-
-            } catch (error) {
-                console.error('Error initializing map:', error);
-            }
-        }
-
-        function getDirections() {
-            const companyLocation = { lat: -21.9705, lng: -46.7916 };
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${companyLocation.lat},${companyLocation.lng}`);
-        }
-
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Mensagem enviada! Entraremos em contato em breve.');
-            this.reset();
+            return config;
         });
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" async defer></script>
+    
+    <!-- Application JS -->
+    <script src="./js/map.js"></script>
+    <script src="./js/dashboard.js"></script>
 </body>
 </html>

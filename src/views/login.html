@@ -24,6 +24,7 @@
             color: #333;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -38,6 +39,11 @@
                     <label for="password" class="form-label">Senha</label>
                     <input type="password" class="form-control" id="password" required>
                 </div>
+                <div class="mb-3 text-center">
+                    <a href="#" onclick="recoverPassword(); return false;" class="text-muted">
+                        Esqueceu sua senha?
+                    </a>
+                </div>
                 <button type="submit" class="btn btn-primary w-100">Entrar</button>
             </form>
         </div>
@@ -47,22 +53,110 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        function login() {
+        async function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username === '123' && password === '123') {
-                // Admin login
-                localStorage.setItem('authToken', 'admin-token');
-                localStorage.setItem('userRole', 'admin');
-                window.location.href = 'dashboard.html';
-            } else if (username === 'aaa' && password === 'aaa') {
-                // Regular user login
-                localStorage.setItem('authToken', 'user-token');
-                localStorage.setItem('userRole', 'user');
-                window.location.href = 'dashboard.html';
-            } else {
-                alert('Credenciais inválidas');
+            console.log('Attempting login with:', { email: username });
+
+            try {
+                const response = await axios.post('http://localhost:4040/login', {
+                    email: username,
+                    password: password
+                });
+
+                console.log('Login response:', response.data);
+
+                if (response.data.success) {
+                    console.log('Login successful, setting tokens...');
+                    localStorage.setItem('authToken', response.data.token);
+                    localStorage.setItem('userRole', response.data.role);
+                    
+                    console.log('Redirecting to dashboard...');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    console.log('Login failed:', response.data);
+                    alert('Credenciais inválidas');
+                }
+            } catch (error) {
+                console.error('Login error details:', {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    message: error.response?.data?.message
+                });
+                alert('Erro ao fazer login: ' + (error.response?.data?.message || 'Erro desconhecido'));
+            }
+        }
+
+        // Add password recovery function
+        async function recoverPassword() {
+            const email = prompt("Digite seu email:");
+            if (!email) return;
+
+            try {
+                // Request verification code
+                const response = await axios.post('http://localhost:4040/recover-password', {
+                    email: email
+                });
+
+                if (response.data.success) {
+                    console.log('SMS code sent:', response.data);
+                    
+                    // Store the token for later use
+                    const token = response.data.message;
+
+                    // Prompt for verification code
+                    const code = prompt("Digite o código recebido por SMS:");
+                    if (!code) return;
+
+                    // Verify the code
+                    const verifyResponse = await axios.post('http://localhost:4040/verify-code', {
+                        email: email,
+                        code: code,
+                        token: token
+                    });
+
+                    if (verifyResponse.data.success) {
+                        // If code is valid, prompt for new password
+                        const newPassword = prompt("Digite sua nova senha:");
+                        if (!newPassword) return;
+
+                        // Update the password
+                        const updateResponse = await axios.put('http://localhost:4040/update-password', {
+                            email: email,
+                            password: newPassword,
+                            code: code,
+                            token: token
+                        });
+
+                        if (updateResponse.data.success) {
+                            alert('Senha atualizada com sucesso!');
+                        } else {
+                            alert('Erro ao atualizar senha');
+                        }
+                    } else {
+                        alert('Código inválido');
+                    }
+                } else {
+                    alert('Email não encontrado');
+                }
+            } catch (error) {
+                console.error('Error details:', error);
+                
+                let errorMessage = 'Erro desconhecido';
+                if (error.response) {
+                    errorMessage = error.response.data.message || error.response.data || error.message;
+                    console.error('Response error:', {
+                        data: error.response.data,
+                        status: error.response.status
+                    });
+                } else if (error.request) {
+                    errorMessage = 'Servidor não respondeu. Verifique sua conexão.';
+                } else {
+                    errorMessage = error.message;
+                }
+                
+                alert('Erro ao recuperar senha: ' + errorMessage);
             }
         }
     </script>
