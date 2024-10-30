@@ -5,12 +5,44 @@ var bcrypt = require('bcryptjs')
 
 class UsersController{
     async create(req, res){
-        let {name, email, password, phone, role} = req.body
-        
-        let result = await User.new(name, email, password,phone,role)
-        result.status
-        ? res.status(200).json({sucess: true, massage:"Usuário Cadastrado com Sucesso"})
-        : res.status(404).json({sucess: false, message: result.err})
+        try {
+            const { name, email, password, phone, role } = req.body;
+            
+            if (!name || !email || !password || !phone || role === undefined) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Todos os campos são obrigatórios'
+                });
+            }
+
+            // Validate role
+            if (role !== 1 && role !== 2) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Função inválida'
+                });
+            }
+
+            const result = await User.new(name, email, password, phone, parseInt(role));
+            
+            if (result.status) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Usuário cadastrado com sucesso'
+                });
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: result.err || 'Erro ao cadastrar usuário'
+                });
+            }
+        } catch (error) {
+            console.error('Create user error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro interno ao criar usuário'
+            });
+        }
     }
     async findAll(req, res){
         let users = await User.findAll()
@@ -82,44 +114,59 @@ class UsersController{
         }
     }
 
-    async login(req,res){
-        let {email, password} = req.body
-        
-        console.log('Login attempt:', { email, password });
-        
-        let user = await User.findByEmail(email)
-        console.log('Found user:', user);
-        
-        if (!user.status){
-            user.err === undefined
-            ? res.status(406).json({success: false, message: 'E-mail não encontrado'})
-            : res.status(404).json({success: false, message: user.err})
-        } else {
-            console.log('Comparing passwords:');
-            console.log('Input password:', password);
-            console.log('Stored hash:', user.values.password);
-            
-            let isPassword = bcrypt.compareSync(password, user.values.password)
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            console.log('Login attempt:', { email, password });
+
+            if (!email || !password) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email e senha são obrigatórios'
+                });
+            }
+
+            const user = await User.findByEmail(email);
+            console.log('Found user:', user);
+
+            if (!user || !user.status) {
+                return res.status(406).json({
+                    success: false,
+                    message: 'E-mail não encontrado'
+                });
+            }
+
+            const isPassword = bcrypt.compareSync(password, user.values.password);
             console.log('Password match:', isPassword);
             
-            if (isPassword){
-                let token = jwt.sign(
+            if (isPassword) {
+                const token = jwt.sign(
                     {
                         email: user.values.email, 
-                        role: user.values.role
+                        role: user.values.role,
+                        id: user.values.id // Add user ID to token
                     },
                     process.env.SECRET,
-                    {expiresIn: 600}
-                )
+                    { expiresIn: '1h' } // Increased token expiration
+                );
                 
-                res.status(200).json({
+                return res.status(200).json({
                     success: true, 
                     token: token,
                     role: user.values.role
-                })
+                });
             } else {
-                res.status(406).json({success: false, message: 'Senha Inválida'})
+                return res.status(406).json({
+                    success: false, 
+                    message: 'Senha inválida'
+                });
             }
+        } catch (error) {
+            console.error('Login error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro interno no servidor'
+            });
         }
     }
     async editPass(req, res){

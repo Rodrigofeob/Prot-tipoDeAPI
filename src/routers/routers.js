@@ -9,7 +9,7 @@ const Auth = require('../middleware/Auth')
 const AuthAlterPass = require('../middleware/AuthAlterPass')
 
 // User routes
-router.post('/user', UsersController.create)
+router.post('/user', AdminAuth, UsersController.create)
 router.post('/login', UsersController.login)
 router.post('/recover-password', RecoverPassController.request)
 router.get('/users', UsersController.findAll)

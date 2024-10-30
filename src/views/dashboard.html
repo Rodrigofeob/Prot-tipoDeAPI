@@ -33,6 +33,11 @@
                     <li class="nav-item">
                         <button class="btn btn-light" onclick="logout()">Logout</button>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">
+                            <i class="bi bi-info-circle"></i> Sobre Nós
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -56,7 +61,7 @@
                                     <i class="bi bi-person-plus"></i> Adicionar Usuário
                                 </button>
                                 <button class="btn btn-outline-primary mb-2" onclick="listUsers()">
-                                    <i class="bi bi-people"></i> Listar Usuários
+                                    <i class="bi bi-list"></i> Listar Usuários
                                 </button>
                             </div>
                             <div id="usersList" class="mt-3"></div>
@@ -132,9 +137,14 @@
                         <div class="mb-3">
                             <label for="userRole" class="form-label">Função</label>
                             <select class="form-select" id="userRole" required>
-                                <option value="user">Usuário</option>
-                                <option value="admin">Administrador</option>
+                                <option value="">Selecione uma função</option>
+                                <option value="1">Administrador</option>
+                                <option value="2">Usuário</option>
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPassword" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="userPassword" required>
                         </div>
                     </form>
                 </div>
@@ -222,31 +232,88 @@
                 </div>
                 <div class="card-body">
                     <div id="map" style="height: 400px;"></div>
-                    <button class="btn btn-primary mt-3" onclick="getDirections()">Como Chegar</button>
+                    <div class="mt-3">
+                        <p><strong>Endereço:</strong> Av. Dr. Octávio da Silva Bastos, 2439 - Jardim Nova São João, São João da Boa Vista - SP</p>
+                        <button class="btn btn-primary" onclick="getDirections()">
+                            <i class="bi bi-map"></i> Como Chegar
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Contact Form -->
+            <!-- News Section -->
+            <div class="row">
+                <!-- News Section -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>Últimas Notícias</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="news-item mb-3">
+                                <h5>Campanha de Doação de Alimentos</h5>
+                                <p class="text-muted">15/03/2024</p>
+                                <p>Nossa última campanha arrecadou mais de 500kg de alimentos não perecíveis que foram distribuídos para famílias carentes.</p>
+                            </div>
+                            <div class="news-item mb-3">
+                                <h5>Novo Projeto Social</h5>
+                                <p class="text-muted">10/03/2024</p>
+                                <p>Iniciamos um novo projeto de capacitação profissional para jovens da comunidade.</p>
+                            </div>
+                            <a href="#" class="btn btn-outline-primary">Ver todas as notícias</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>Próximos Eventos</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="event-item mb-3">
+                                <h5>Workshop de Empreendedorismo</h5>
+                                <p><i class="bi bi-calendar-event"></i> 25/03/2024</p>
+                                <p><i class="bi bi-clock"></i> 14:00 - 17:00</p>
+                                <p><i class="bi bi-geo-alt"></i> Auditório Principal</p>
+                            </div>
+                            <div class="event-item mb-3">
+                                <h5>Feira de Artesanato</h5>
+                                <p><i class="bi bi-calendar-event"></i> 01/04/2024</p>
+                                <p><i class="bi bi-clock"></i> 09:00 - 18:00</p>
+                                <p><i class="bi bi-geo-alt"></i> Praça Central</p>
+                            </div>
+                            <a href="#" class="btn btn-outline-primary">Ver todos os eventos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h3>Contato</h3>
+                    <h3>Nosso Impacto</h3>
                 </div>
                 <div class="card-body">
-                    <form id="contactForm">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="name" required>
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <h2 class="text-primary">500+</h2>
+                            <p>Famílias Atendidas</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
+                        <div class="col-md-3 mb-3">
+                            <h2 class="text-primary">50+</h2>
+                            <p>Voluntários Ativos</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Mensagem</label>
-                            <textarea class="form-control" id="message" rows="3" required></textarea>
+                        <div class="col-md-3 mb-3">
+                            <h2 class="text-primary">20+</h2>
+                            <p>Projetos Realizados</p>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </form>
+                        <div class="col-md-3 mb-3">
+                            <h2 class="text-primary">R$100k+</h2>
+                            <p>Doações Arrecadadas</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -283,7 +350,7 @@
                     <p>© 2024 Todos os direitos reservados</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <p>Desenvolvido com ❤️ por alunos da UNIFEOB</p>
+                    <p>Desenvolvido com ❤️ por alunos da <a href="https://www.unifeob.edu.br" target="_blank" style="color: #1a73e8; text-decoration: none;">UNIFEOB</a></p>
                 </div>
             </div>
         </div>
@@ -305,7 +372,7 @@
             return config;
         });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlwetiM8mbXPrzsm32Z8ao0qrRif8fgZY" async defer></script>
     
     <!-- Application JS -->
     <script src="./js/map.js"></script>

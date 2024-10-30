@@ -112,8 +112,13 @@ async function addUser() {
         const name = document.getElementById('userName').value;
         const email = document.getElementById('userEmail').value;
         const phone = document.getElementById('userPhone').value;
-        const role = document.getElementById('userRole').value;
-        const password = 'default123'; // You might want to generate this or ask for it
+        const role = parseInt(document.getElementById('userRole').value);
+        const password = document.getElementById('userPassword').value;
+
+        if (!name || !email || !phone || !role || !password) {
+            alert('Por favor, preencha todos os campos');
+            return;
+        }
 
         const response = await axios.post('/user', {
             name,
@@ -125,16 +130,18 @@ async function addUser() {
 
         if (response.data.success) {
             alert('Usuário adicionado com sucesso!');
+            document.getElementById('addUserForm').reset();
             bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
-            listUsers();
+            await listUsers();
         }
     } catch (error) {
         console.error('Error adding user:', error);
-        alert('Erro ao adicionar usuário: ' + error.response?.data?.message || error.message);
+        alert('Erro ao adicionar usuário: ' + (error.response?.data?.message || error.message));
     }
 }
 
 async function listUsers() {
+    showLoading('usersList');
     try {
         const response = await axios.get('/users');
         const users = response.data.values;
@@ -145,24 +152,72 @@ async function listUsers() {
             return;
         }
 
-        usersList.innerHTML = users.map(user => `
-            <div class="card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">${user.name}</h5>
-                    <p class="card-text">
-                        <strong>Email:</strong> ${user.email}<br>
-                        <strong>Telefone:</strong> ${user.phone}<br>
-                        <strong>Função:</strong> ${user.role === '1' ? 'Admin' : 'Usuário'}
-                    </p>
-                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">
-                        <i class="bi bi-trash"></i> Excluir
-                    </button>
+        usersList.innerHTML = users.map(user => {
+            console.log(`User ${user.name} role:`, user.role, typeof user.role);
+            
+            const roleNum = parseInt(user.role);
+            const roleText = roleNum === 1 ? 'Administrador' : 'Usuário';
+            const roleClass = roleNum === 1 ? 'text-danger' : 'text-success';
+            
+            return `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">${user.name}</h5>
+                        <p class="card-text">
+                            <strong>Email:</strong> ${user.email}<br>
+                            <strong>Telefone:</strong> ${user.phone}<br>
+                            <strong>Função:</strong> <span class="${roleClass}">${roleText}</span>
+                        </p>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm me-2" onclick="editUserRole(${user.id}, ${roleNum})">
+                                <i class="bi bi-pencil"></i> ${roleNum === 1 ? 'Remover Admin' : 'Tornar Admin'}
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">
+                                <i class="bi bi-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     } catch (error) {
         console.error('Error listing users:', error);
-        alert('Erro ao listar usuários: ' + (error.response?.data?.message || error.message));
+        usersList.innerHTML = `
+            <div class="alert alert-danger">
+                Erro ao carregar usuários: ${error.response?.data?.message || error.message}
+            </div>
+        `;
+    }
+}
+
+async function editUserRole(userId, currentRole) {
+    try {
+        const currentRoleNum = parseInt(currentRole);
+        const newRole = currentRoleNum === 1 ? 2 : 1; // Toggle between admin (1) and user (2)
+        
+        console.log('Current role:', currentRoleNum, 'New role:', newRole); // Debug log
+        
+        const confirmMessage = newRole === 1 
+            ? 'Deseja tornar este usuário um Administrador?' 
+            : 'Deseja remover os privilégios de Administrador deste usuário?';
+
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+
+        const response = await axios.put(`/user/${userId}`, {
+            role: newRole
+        });
+
+        if (response.data.success) {
+            alert('Função do usuário atualizada com sucesso!');
+            await listUsers(); // Refresh the list
+        } else {
+            alert('Erro ao atualizar função do usuário: ' + response.data.message);
+        }
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        alert('Erro ao atualizar função do usuário: ' + (error.response?.data?.message || error.message));
     }
 }
 
@@ -216,33 +271,43 @@ async function addExpense() {
 }
 
 async function listExpenses() {
+    showLoading('expensesList');
     try {
-        const response = await axios.get('/expenses');
-        const expenses = response.data.values;
-        const expensesList = document.getElementById('expensesList');
+        const response = await axios.get('/expenses', {
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
         
-        if (!expenses || expenses.length === 0) {
-            expensesList.innerHTML = '<p class="text-muted">Nenhuma despesa registrada.</p>';
+        if (!response.data || !response.data.values) {
+            document.getElementById('expensesList').innerHTML = 
+                '<p class="text-muted">Nenhuma despesa registrada.</p>';
             return;
         }
 
+        const expenses = response.data.values;
+        const expensesList = document.getElementById('expensesList');
+        
         expensesList.innerHTML = expenses.map(expense => `
             <div class="card mb-2">
                 <div class="card-body">
                     <h5 class="card-title">${expense.description}</h5>
                     <p class="card-text">
                         <strong>Valor:</strong> R$ ${parseFloat(expense.amount).toFixed(2)}<br>
-                        <strong>Data:</strong> ${new Date(expense.date).toLocaleDateString('pt-BR')}
+                        <strong>Data:</strong> ${new Date(expense.date).toLocaleDateString()}
                     </p>
-                    <button class="btn btn-danger btn-sm" onclick="deleteExpense(${expense.id})">
-                        <i class="bi bi-trash"></i> Excluir
-                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-danger btn-sm" onclick="deleteExpense(${expense.id})">
+                            <i class="bi bi-trash"></i> Excluir
+                        </button>
+                    </div>
                 </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Error listing expenses:', error);
-        alert('Erro ao listar despesas: ' + (error.response?.data?.message || error.message));
+        document.getElementById('expensesList').innerHTML = 
+            `<div class="alert alert-danger">Erro ao carregar despesas: ${error.response?.data?.message || error.message}</div>`;
     }
 }
 
@@ -296,30 +361,34 @@ async function addDonation() {
 }
 
 async function listDonations() {
+    showLoading('donationsList');
     try {
-        const response = await axios.get('/donations');
-        const donations = response.data.values;
-        const donationsList = document.getElementById('donationsList');
+        const response = await axios.get('/donations', {
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
         
-        if (!donations || donations.length === 0) {
-            donationsList.innerHTML = '<p class="text-muted">Nenhuma doação registrada.</p>';
+        if (!response.data || !response.data.values) {
+            document.getElementById('donationsList').innerHTML = 
+                '<p class="text-muted">Nenhuma doação registrada.</p>';
             return;
         }
 
+        const donations = response.data.values;
+        const donationsList = document.getElementById('donationsList');
+        
         donationsList.innerHTML = donations.map(donation => `
             <div class="card mb-2">
                 <div class="card-body">
-                    <h5 class="card-title">${donation.donor_name}</h5>
+                    <h5 class="card-title">${donation.donorName || donation.description}</h5>
                     <p class="card-text">
                         <strong>Valor:</strong> R$ ${parseFloat(donation.amount).toFixed(2)}<br>
-                        <strong>Data:</strong> ${new Date(donation.date).toLocaleDateString('pt-BR')}
+                        <strong>Data:</strong> ${new Date(donation.date).toLocaleDateString()}
                     </p>
                     <div class="btn-group">
                         <button class="btn btn-danger btn-sm" onclick="deleteDonation(${donation.id})">
                             <i class="bi bi-trash"></i> Excluir
-                        </button>
-                        <button class="btn btn-primary btn-sm ms-2" onclick="editDonation(${donation.id})">
-                            <i class="bi bi-pencil"></i> Editar
                         </button>
                     </div>
                 </div>
@@ -327,7 +396,8 @@ async function listDonations() {
         `).join('');
     } catch (error) {
         console.error('Error listing donations:', error);
-        alert('Erro ao listar doações: ' + (error.response?.data?.message || error.message));
+        document.getElementById('donationsList').innerHTML = 
+            `<div class="alert alert-danger">Erro ao carregar doações: ${error.response?.data?.message || error.message}</div>`;
     }
 }
 
@@ -432,3 +502,125 @@ async function displayWelcomeMessage() {
         console.error('Error displaying welcome message:', error);
     }
 }
+
+
+function showLoading(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Carregando...</p>
+            </div>
+        `;
+    }
+}
+
+async function listExpenses() {
+    showLoading('expensesList');
+    try {
+        const response = await axios.get('/expenses', {
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
+        
+        if (!response.data || !response.data.values) {
+            document.getElementById('expensesList').innerHTML = 
+                '<p class="text-muted">Nenhuma despesa registrada.</p>';
+            return;
+        }
+
+        const expenses = response.data.values;
+        const expensesList = document.getElementById('expensesList');
+        
+        expensesList.innerHTML = expenses.map(expense => `
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">${expense.description}</h5>
+                    <p class="card-text">
+                        <strong>Valor:</strong> R$ ${parseFloat(expense.amount).toFixed(2)}<br>
+                        <strong>Data:</strong> ${new Date(expense.date).toLocaleDateString()}
+                    </p>
+                    <div class="btn-group">
+                        <button class="btn btn-danger btn-sm" onclick="deleteExpense(${expense.id})">
+                            <i class="bi bi-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error listing expenses:', error);
+        document.getElementById('expensesList').innerHTML = 
+            `<div class="alert alert-danger">Erro ao carregar despesas: ${error.response?.data?.message || error.message}</div>`;
+    }
+}
+
+async function listDonations() {
+    showLoading('donationsList');
+    try {
+        const response = await axios.get('/donations', {
+            headers: {
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
+        
+        if (!response.data || !response.data.values) {
+            document.getElementById('donationsList').innerHTML = 
+                '<p class="text-muted">Nenhuma doação registrada.</p>';
+            return;
+        }
+
+        const donations = response.data.values;
+        const donationsList = document.getElementById('donationsList');
+        
+        donationsList.innerHTML = donations.map(donation => `
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">${donation.donorName || donation.description}</h5>
+                    <p class="card-text">
+                        <strong>Valor:</strong> R$ ${parseFloat(donation.amount).toFixed(2)}<br>
+                        <strong>Data:</strong> ${new Date(donation.date).toLocaleDateString()}
+                    </p>
+                    <div class="btn-group">
+                        <button class="btn btn-danger btn-sm" onclick="deleteDonation(${donation.id})">
+                            <i class="bi bi-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error listing donations:', error);
+        document.getElementById('donationsList').innerHTML = 
+            `<div class="alert alert-danger">Erro ao carregar doações: ${error.response?.data?.message || error.message}</div>`;
+    }
+}
+
+// Add this near the top of the file
+axios.interceptors.request.use(request => {
+    console.log('Starting Request:', {
+        method: request.method,
+        url: request.url,
+        data: request.data
+    });
+    return request;
+});
+
+axios.interceptors.response.use(response => {
+    console.log('Response:', {
+        status: response.status,
+        data: response.data
+    });
+    return response;
+}, error => {
+    console.log('Response Error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+    });
+    return Promise.reject(error);
+});

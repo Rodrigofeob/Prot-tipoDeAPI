@@ -90,11 +90,11 @@
 
         // Add password recovery function
         async function recoverPassword() {
-            const email = prompt("Digite seu email:");
-            if (!email) return;
-
             try {
-                // Request verification code
+                const email = prompt("Digite seu email:");
+                if (!email) return;
+
+                // First step: Request verification code
                 const response = await axios.post('http://localhost:4040/recover-password', {
                     email: email
                 });
@@ -103,10 +103,10 @@
                     console.log('SMS code sent:', response.data);
                     
                     // Store the token for later use
-                    const token = response.data.message;
+                    const token = response.data.token;
 
-                    // Prompt for verification code
-                    const code = prompt("Digite o código recebido por SMS:");
+                    // Second step: Get verification code from user
+                    const code = prompt("Digite o código de 6 dígitos recebido por SMS:");
                     if (!code) return;
 
                     // Verify the code
@@ -117,11 +117,11 @@
                     });
 
                     if (verifyResponse.data.success) {
-                        // If code is valid, prompt for new password
+                        // If code is valid, get new password
                         const newPassword = prompt("Digite sua nova senha:");
                         if (!newPassword) return;
 
-                        // Update the password
+                        // Update password
                         const updateResponse = await axios.put('http://localhost:4040/update-password', {
                             email: email,
                             password: newPassword,
@@ -142,20 +142,10 @@
                 }
             } catch (error) {
                 console.error('Error details:', error);
-                
                 let errorMessage = 'Erro desconhecido';
-                if (error.response) {
-                    errorMessage = error.response.data.message || error.response.data || error.message;
-                    console.error('Response error:', {
-                        data: error.response.data,
-                        status: error.response.status
-                    });
-                } else if (error.request) {
-                    errorMessage = 'Servidor não respondeu. Verifique sua conexão.';
-                } else {
-                    errorMessage = error.message;
+                if (error.response?.data?.message) {
+                    errorMessage = error.response.data.message;
                 }
-                
                 alert('Erro ao recuperar senha: ' + errorMessage);
             }
         }

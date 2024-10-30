@@ -1,43 +1,25 @@
+let map;
+const unifeobLocation = { lat: -21.9747, lng: -46.7936 }; // UNIFEOB coordinates
+
 function initMap() {
-    try {
-        const companyLocation = { lat: -21.9705, lng: -46.7916 };
-        const mapElement = document.getElementById('map');
-        
-        if (!mapElement) {
-            console.error('Map element not found');
-            return;
-        }
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: unifeobLocation,
+        zoom: 15
+    });
 
-        // Check if google maps API is loaded
-        if (!window.google || !window.google.maps) {
-            console.error('Google Maps API not loaded');
-            return;
-        }
-
-        const map = new google.maps.Map(mapElement, {
-            zoom: 15,
-            center: companyLocation,
-            styles: [
-                {
-                    featureType: "poi",
-                    elementType: "labels",
-                    stylers: [{ visibility: "on" }]
-                }
-            ]
-        });
-
-        const marker = new google.maps.Marker({
-            position: companyLocation,
-            map: map,
-            title: 'Nossa Empresa'
-        });
-
-    } catch (error) {
-        console.error('Error initializing map:', error);
-    }
+    // Add marker for UNIFEOB
+    const marker = new google.maps.Marker({
+        position: unifeobLocation,
+        map: map,
+        title: 'UNIFEOB'
+    });
 }
 
 function getDirections() {
-    const companyLocation = { lat: -21.9705, lng: -46.7916 };
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${companyLocation.lat},${companyLocation.lng}`);
-} 
+    // Open Google Maps directions in a new tab
+    const destination = encodeURIComponent('UNIFEOB, São João da Boa Vista, SP');
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank');
+}
+
+// Initialize map when the page loads
+window.addEventListener('load', initMap); 

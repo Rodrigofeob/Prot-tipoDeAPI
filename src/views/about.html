@@ -6,6 +6,7 @@
     <title>Sobre Nós - Sistema de Gerenciamento</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .navbar {
             background-color: #1a73e8 !important;
@@ -40,83 +41,37 @@
         .content {
             flex: 1 0 auto;
         }
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
+        
+        .section-title {
+            color: #1a73e8;
+            font-weight: 600;
         }
         
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .video-title {
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-        
-        .video-actions button {
-            padding: 8px 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .video-actions button:hover {
-            transform: translateY(-2px);
-        }
-        
-        .btn-outline-success {
-            border-width: 2px;
-        }
-        
-        .btn-outline-success:hover {
-            background-color: #198754;
-            color: white;
-        }
-        
-        .btn-outline-primary {
-            border-width: 2px;
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            color: white;
-        }
-        
-        .btn-outline-info {
-            border-width: 2px;
-        }
-        
-        .btn-outline-info:hover {
-            background-color: #0dcaf0;
-            color: white;
-        }
-
-        .video-description {
-            font-size: 0.95rem;
-        }
-        
-        .suggested-video {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .suggested-video:hover {
+        .mission-box, .vision-box {
             background-color: #f8f9fa;
+            border-left: 5px solid #1a73e8;
         }
         
-        .description-text {
-            max-height: 100px;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
+        .value-card {
+            transition: transform 0.3s ease;
         }
         
-        .description-text.expanded {
-            max-height: 1000px;
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .history-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .about-section {
+            padding: 80px 0;
+        }
+        
+        .lead {
+            font-size: 1.15rem;
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -124,7 +79,7 @@
     <div class="content">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="dashboard.html">Sistema de Gerenciamento</a>
+                <a class="navbar-brand" href="dashboard.html">Associação São Francisco de Assis</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -143,66 +98,76 @@
 
         <div class="about-section">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h2 class="mb-4">Sobre Nossa Empresa</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim.</p>
-                        <p>Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio. Proin quis tortor orci.</p>
-                        <p>Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum.</p>
-                    </div>
-                    <div class="col-md-6">
-                        <img src="https://via.placeholder.com/500x300" alt="About Us" class="about-image">
+                <!-- Mission Section -->
+                <div class="row mb-5">
+                    <div class="col-lg-12 text-center">
+                        <h2 class="section-title mb-4">Nossa Missão</h2>
+                        <div class="mission-box p-4 bg-light rounded shadow-sm">
+                            <p class="lead mb-0">
+                                Prestar assistência às famílias em situação de vulnerabilidade, por meio de atividades 
+                                socioeducativas de evangelização, assistência social, psicológica, educacional e 
+                                espiritual bem como distribuição de alimentos, roupas como forma de amenizar seu sofrimento.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Add this after the existing about-section div -->
-        <div class="video-section my-5">
-            <div class="container">
+                <!-- History Section -->
+                <div class="row mb-5 align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="mb-4">Nossa História</h2>
+                        <p class="history-text">
+                            A Associação São Francisco de Assis encontra-se atualmente na 
+                            <a href="https://maps.google.com" target="_blank" class="text-primary">
+                                Av. Dr. Octávio da Silva Bastos, 2439 - Jardim Nova São João, 
+                                São João da Boa Vista - SP
+                            </a>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="path/to/building-image.jpg" alt="Nossa Sede" class="img-fluid rounded shadow">
+                    </div>
+                </div>
+
+                <!-- Vision Section -->
+                <div class="row mb-5">
+                    <div class="col-lg-12">
+                        <h2 class="text-center mb-4">Nossa Visão</h2>
+                        <div class="vision-box p-4 bg-light rounded shadow-sm text-center">
+                            <p class="lead mb-0">
+                                Garantir às famílias um espaço educativo, físico, psicológico, e de promoção 
+                                social capaz de proporcionar à população o direito à cidadania.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Values Section -->
                 <div class="row">
-                    <div class="col-lg-12"> <!-- Changed to full width -->
-                        <!-- Video Player -->
-                        <div class="video-container mb-3">
-                            <iframe 
-                                width="100%" 
-                                height="500" 
-                                src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-                                title="Sobre Nossa Empresa" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
+                    <div class="col-lg-12 text-center mb-4">
+                        <h2>Nossos Valores</h2>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card text-center p-4 bg-white rounded shadow-sm h-100">
+                            <i class="bi bi-shield-check text-primary mb-3" style="font-size: 2rem;"></i>
+                            <h4>Ética</h4>
+                            <p>Comprometimento com a transparência e integridade em todas as nossas ações.</p>
                         </div>
-                        <!-- Video Title and Actions -->
-                        <h3 class="video-title mb-2">Nossa História e Missão</h3>
-                        <div class="video-actions d-flex align-items-center mb-3">
-                            <div class="d-flex align-items-center me-4">
-                                <button class="btn btn-outline-success me-2">
-                                    <i class="bi bi-heart-fill"></i> Curtir (1.2K)
-                                </button>
-                                <button class="btn btn-outline-primary me-2">
-                                    <i class="bi bi-star-fill"></i> Favoritar
-                                </button>
-                                <!-- Update the share button in the video actions div -->
-                                <button class="btn btn-outline-info" onclick="copyToClipboard()">
-                                    <i class="bi bi-share-fill"></i> Compartilhar
-                                </button>
-                            </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card text-center p-4 bg-white rounded shadow-sm h-100">
+                            <i class="bi bi-heart text-primary mb-3" style="font-size: 2rem;"></i>
+                            <h4>Sensibilidade</h4>
+                            <p>Empatia e compreensão com as necessidades de cada família assistida.</p>
                         </div>
-                        <!-- Video Description -->
-                        <div class="video-description bg-light p-3 rounded">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>52,147 visualizações • 15 de mar. de 2024</span>
-                                <button class="btn btn-link" onclick="toggleDescription()">Mostrar mais</button>
-                            </div>
-                            <div id="description-text" class="description-text">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                <div class="collapsed-content" style="display: none;">
-                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="value-card text-center p-4 bg-white rounded shadow-sm h-100">
+                            <i class="bi bi-people text-primary mb-3" style="font-size: 2rem;"></i>
+                            <h4>Amor ao Próximo</h4>
+                            <p>Dedicação e cuidado no atendimento às famílias e comunidade.</p>
                         </div>
                     </div>
                 </div>
@@ -213,88 +178,36 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>&copy; 2023 Nome da Sua Empresa. Todos os direitos reservados.</p>
-                    <p class="mt-2">
-                        <small>Este site foi desenvolvido como um projeto gratuito em colaboração com a 
-                        <a href="https://www.unifeob.edu.br/" target="_blank">UNIFEOB</a>.</small>
-                    </p>
+                <div class="col-md-4">
+                    <h5>Sobre Nós</h5>
+                    <p>Somos uma organização dedicada a fazer a diferença na vida das pessoas através de ações sociais e apoio comunitário.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Links Úteis</h5>
+                    <ul>
+                        <li><a href="privacy.html"><i class="bi bi-chevron-right"></i>Política de Privacidade</a></li>
+                        <li><a href="terms.html"><i class="bi bi-chevron-right"></i>Termos de Uso</a></li>
+                        <li><a href="faq.html"><i class="bi bi-chevron-right"></i>FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contato</h5>
+                    <ul>
+                        <li><i class="bi bi-telephone"></i> (19) 3622-2899</li>
+                        <li><i class="bi bi-geo-alt"></i> São João da Boa Vista, SP</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p>© 2024 Todos os direitos reservados</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Desenvolvido com ❤️ por alunos da <a href="https://www.unifeob.edu.br" target="_blank" style="color: #1a73e8; text-decoration: none;">UNIFEOB</a></p>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Add this script section at the end of your body tag -->
-    <script>
-        function toggleDescription() {
-            const descriptionText = document.getElementById('description-text');
-            const collapsedContent = descriptionText.querySelector('.collapsed-content');
-            const button = document.querySelector('.btn-link');
-            
-            if (collapsedContent.style.display === 'none') {
-                collapsedContent.style.display = 'block';
-                descriptionText.classList.add('expanded');
-                button.textContent = 'Mostrar menos';
-            } else {
-                collapsedContent.style.display = 'none';
-                descriptionText.classList.remove('expanded');
-                button.textContent = 'Mostrar mais';
-            }
-        }
-
-        function copyToClipboard() {
-            // You can replace this with your actual YouTube video URL
-            const videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-            
-            navigator.clipboard.writeText(videoUrl).then(() => {
-                // Show the toast
-                const toast = new bootstrap.Toast(document.getElementById('clipboardToast'), {
-                    animation: true,
-                    autohide: true,
-                    delay: 2000
-                });
-                toast.show();
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-                alert('Não foi possível copiar o link. Por favor, tente novamente.');
-            });
-        }
-
-        // Initialize tooltips if you're using them
-        document.addEventListener('DOMContentLoaded', function() {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-            var toastList = toastElList.map(function(toastEl) {
-                return new bootstrap.Toast(toastEl);
-            });
-        });
-    </script>
-
-    <!-- Add these additional styles -->
-    <style>
-        .toast {
-            opacity: 0.95;
-        }
-
-        .toast:hover {
-            opacity: 1;
-        }
-
-        .toast-body {
-            font-size: 0.95rem;
-        }
-    </style>
-
-    <!-- Add this toast element after your video section -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-        <div id="clipboardToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    Link copiado para a área de transferência!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
