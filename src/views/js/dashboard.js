@@ -1,5 +1,45 @@
 console.log('Dashboard.js loaded');
 
+document.getElementById('paymentMethod')?.addEventListener('change', function(e) {
+    const pixInfo = document.getElementById('pixInfo');
+    const bankInfo = document.getElementById('bankInfo');
+    
+    pixInfo.style.display = 'none';
+    bankInfo.style.display = 'none';
+    
+    if (e.target.value === 'pix') {
+        pixInfo.style.display = 'block';
+    } else if (e.target.value === 'bank') {
+        bankInfo.style.display = 'block';
+    }
+});
+
+async function submitUserDonation(event) {
+    event.preventDefault();
+    
+    const amount = document.getElementById('donationAmount').value;
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const message = document.getElementById('donationMessage').value;
+
+    try {
+        const response = await axios.post('/user-donation', {
+            amount: parseFloat(amount),
+            paymentMethod,
+            message
+        });
+
+        if (response.data.success) {
+            alert('Doação registrada com sucesso! Obrigado pela sua contribuição.');
+            document.getElementById('userDonationForm').reset();
+        } else {
+            alert('Erro ao processar doação: ' + response.data.message);
+        }
+    } catch (error) {
+        console.error('Donation error:', error);
+        alert('Erro ao processar doação: ' + (error.response?.data?.message || 'Erro desconhecido'));
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
     try {
@@ -9,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Authentication functions
+// funcoes de autenticacao
 function getAuthToken() {
     return localStorage.getItem('authToken');
 }
@@ -19,7 +59,7 @@ function getUserRole() {
         const token = getAuthToken();
         if (token) {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            console.log('Token payload:', payload); // Debug log
+            console.log('Token payload:', payload); // log de debug
             return payload.role;
         }
     } catch (error) {
@@ -31,14 +71,14 @@ function getUserRole() {
 async function checkAuth() {
     console.log('Checking auth...');
     const token = getAuthToken();
-    console.log('Token available:', !!token); // Debug log
+    console.log('Token available:', !!token); // log de debug
     
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
 
-    // Add this debug log
+    // log de debug
     console.log('About to display welcome message');
     await displayWelcomeMessage();
     console.log('Welcome message should be displayed');
@@ -56,16 +96,16 @@ async function checkAuth() {
         return;
     }
 
-    // Hide both views initially
+    // esconder ambas as views inicialmente
     adminContent.style.display = 'none';
     userContent.style.display = 'none';
 
-    // Show appropriate view based on role
-    if (role === "1" || role === 1) { // Check both string and number
+    // Mostrar a view apropriada com base no cargo
+    if (role === "1" || role === 1) {
         console.log('Loading admin view');
         adminContent.style.display = 'block';
         
-        // Load admin data
+        // Carregar dados do administrador
         try {
             await Promise.all([
                 listUsers(),
@@ -75,7 +115,7 @@ async function checkAuth() {
         } catch (error) {
             console.error('Error loading admin data:', error);
             if (error.response?.status === 403) {
-                logout(); // Token expired or invalid
+                logout(); // Token expirado
             }
         }
     } else {

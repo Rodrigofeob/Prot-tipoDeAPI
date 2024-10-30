@@ -265,26 +265,56 @@
                     </div>
                 </div>
 
-                <!-- Upcoming Events -->
+                <!-- Donation Section -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h3>Próximos Eventos</h3>
+                            <h3>Fazer uma Doação</h3>
                         </div>
                         <div class="card-body">
-                            <div class="event-item mb-3">
-                                <h5>Workshop de Empreendedorismo</h5>
-                                <p><i class="bi bi-calendar-event"></i> 25/03/2024</p>
-                                <p><i class="bi bi-clock"></i> 14:00 - 17:00</p>
-                                <p><i class="bi bi-geo-alt"></i> Auditório Principal</p>
+                            <form id="userDonationForm" onsubmit="submitUserDonation(event)">
+                                <div class="mb-3">
+                                    <label for="donationAmount" class="form-label">Valor da Doação (R$)</label>
+                                    <input type="number" class="form-control" id="donationAmount" min="1" step="0.01" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paymentMethod" class="form-label">Forma de Pagamento</label>
+                                    <select class="form-select" id="paymentMethod" required onchange="handlePaymentMethodChange()">
+                                        <option value="">Selecione uma opção</option>
+                                        <option value="pix">PIX</option>
+                                        <option value="mercadopago">Cartão de Crédito (MercadoPago)</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- PIX QR Code Display -->
+                                <div id="pixQRCode" style="display: none;" class="text-center mb-3">
+                                    <img id="qrCodeImage" src="" alt="QR Code PIX" class="mb-2" style="max-width: 200px;">
+                                    <div class="alert alert-info">
+                                        <p><strong>Chave PIX:</strong> <span id="pixKeyDisplay"></span></p>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="copyPixKey()">
+                                            Copiar Chave
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- MercadoPago Button Container -->
+                                <div id="mercadoPagoButton" style="display: none;" class="text-center mb-3">
+                                    <!-- MercadoPago button will be inserted here -->
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="donationMessage" class="form-label">Mensagem (opcional)</label>
+                                    <textarea class="form-control" id="donationMessage" rows="2"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100" id="submitButton">
+                                    Continuar com a Doação
+                                </button>
+                            </form>
+
+                            <!-- Payment Status -->
+                            <div id="paymentStatus" style="display: none;" class="alert mt-3">
                             </div>
-                            <div class="event-item mb-3">
-                                <h5>Feira de Artesanato</h5>
-                                <p><i class="bi bi-calendar-event"></i> 01/04/2024</p>
-                                <p><i class="bi bi-clock"></i> 09:00 - 18:00</p>
-                                <p><i class="bi bi-geo-alt"></i> Praça Central</p>
-                            </div>
-                            <a href="#" class="btn btn-outline-primary">Ver todos os eventos</a>
                         </div>
                     </div>
                 </div>
@@ -377,5 +407,6 @@
     <!-- Application JS -->
     <script src="./js/map.js"></script>
     <script src="./js/dashboard.js"></script>
+    <script src="./js/donation.js"></script>
 </body>
 </html>

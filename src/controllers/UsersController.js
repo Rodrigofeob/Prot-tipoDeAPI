@@ -15,7 +15,7 @@ class UsersController{
                 });
             }
 
-            // Validate role
+            // validar cargo
             if (role !== 1 && role !== 2) {
                 return res.status(400).json({
                     success: false,
@@ -78,7 +78,7 @@ class UsersController{
                 });
             }
 
-            // Now using the instance method
+            // metodo instancia
             const result = await User.delete(parseInt(id));
             console.log('Delete result:', result);
 
@@ -144,10 +144,10 @@ class UsersController{
                     {
                         email: user.values.email, 
                         role: user.values.role,
-                        id: user.values.id // Add user ID to token
+                        id: user.values.id // add ID no token
                     },
                     process.env.SECRET,
-                    { expiresIn: '1h' } // Increased token expiration
+                    { expiresIn: '1h' } // aumentar tempo de expiração do token
                 );
                 
                 return res.status(200).json({
@@ -190,7 +190,7 @@ class UsersController{
     async delete(req, res) {
         try {
             const id = req.params.id;
-            console.log('Deleting user:', id); // Debug log
+            console.log('Deleting user:', id); // Debug
             
             const result = await User.delete(id);
             
@@ -206,15 +206,15 @@ class UsersController{
     }
     async getCurrentUser(req, res) {
         try {
-            // The user ID should be available from the Auth middleware
-            const userId = req.userId; // Make sure your Auth middleware sets this
+            
+            const userId = req.userId; 
             const user = await User.findById(userId);
             
             if (!user.status) {
                 return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
             }
 
-            // Return only necessary user data
+            // retorna dados do usuario
             res.json({
                 success: true,
                 name: user.values.name,
@@ -223,6 +223,43 @@ class UsersController{
         } catch (error) {
             console.error('Error getting current user:', error);
             res.status(500).json({ success: false, message: 'Erro ao buscar dados do usuário' });
+        }
+    }
+
+    async register(req, res) {
+        try {
+            const { name, email, password } = req.body;
+            
+            if (!name || !email || !password) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Nome, email e senha são obrigatórios'
+                });
+            }
+
+            // Set default values for new registrations
+            const phone = ''; // Optional phone
+            const role = 2;   // Regular user role
+
+            const result = await User.new(name, email, password, phone, role);
+            
+            if (result.status) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Conta criada com sucesso'
+                });
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: result.err || 'Erro ao criar conta'
+                });
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro interno ao criar conta'
+            });
         }
     }
 }
